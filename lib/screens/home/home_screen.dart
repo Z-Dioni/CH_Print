@@ -1,12 +1,27 @@
+import 'package:ch_print/screens/pdf_preview/pdf_preview_screen.dart';
+import 'package:ch_print/state/history_bloc/history_bloc.dart';
+import 'package:ch_print/state/history_bloc/history_event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../state/vehicle_bloc/vehicle_bloc.dart';
 import '../../state/vehicle_bloc/vehicle_event.dart';
 import '../../state/vehicle_bloc/vehicle_state.dart';
 import '../../widgets/vehicle_card.dart';
+import '../../core/utils/validators.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
+
+  // Fonction pour afficher un message d'erreur
+  void _showError(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red.shade800,
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +34,6 @@ class HomeScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          // En-tête / Description
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Text(
@@ -29,7 +43,6 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
 
-          // Liste dynamique des véhicules
           Expanded(
             child: BlocBuilder<VehicleBloc, VehicleState>(
               builder: (context, state) {
@@ -49,8 +62,6 @@ class HomeScreen extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final vehicle = state.vehicles[index];
                     return VehicleCard(
-                      // La clé (Key) est cruciale ici pour que Flutter ne mélange pas
-                      // les champs de texte quand on supprime un élément au milieu de la liste
                       key: ValueKey(vehicle.id),
                       index: index,
                       initialValue: vehicle.chassisNumber,
@@ -71,7 +82,6 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
 
-          // Bouton Ajouter
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: TextButton.icon(
@@ -83,13 +93,12 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
 
-          // Bouton Générer (Bien visible en bas)
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: SizedBox(
                 width: double.infinity,
-                height: 56, // Bouton large et facile à cliquer
+                height: 56,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Theme.of(context).colorScheme.primary,
@@ -99,10 +108,54 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    // La validation et la génération seront ajoutées à l'étape 5
+                    // 1. Récupération de l'état actuel de la liste
+                    final vehicles = context.read<VehicleBloc>().state.vehicles;
+
+                    // 2. Validation 1 : La liste est-elle vide ?
+                    if (vehicles.isEmpty) {
+                      _showError(context, 'Ajoutez au moins un véhicule.');
+                      return;
+                    }
+
+                    // 3. Validation 2 : Chaque numéro est-il valide ?
+                    bool hasError = false;
+                    for (var vehicle in vehicles) {
+                      if (!Validators.isValidChassis(vehicle.chassisNumber)) {
+                        hasError = true;
+                        break; // On arrête la boucle dès qu'on trouve une erreur
+                      }
+                    }
+
+                    if (hasError) {
+                      _showError(
+                        context,
+                        'Veuillez saisir exactement 4 chiffres pour chaque véhicule.',
+                      );
+                      return;
+                    }
+
+                    // 4. Succès : Prêt pour l'aperçu PDF !
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('Génération à venir (Étape suivante)'),
+                        content: Text(
+                          'Validation réussie ! Préparation du document...',
+                        ),
+                        backgroundColor: Colors.green,
+                        behavior: SnackBarBehavior.floating,
+                      ),
+                    );
+
+                    FocusScope.of(context).unfocus();
+                    final chassisList = vehicles
+                        .map((v) => v.chassisNumber)
+                        .toList();
+                    context.read<HistoryBloc>().add(AddToHistory(chassisList));
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            PdfPreviewScreen(vehicles: vehicles),
                       ),
                     );
                   },

@@ -1,3 +1,5 @@
+import 'package:ch_print/state/history_bloc/history_bloc.dart';
+import 'package:ch_print/state/history_bloc/history_event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'core/theme/app_theme.dart';
@@ -20,6 +22,13 @@ class CHPrintApp extends StatelessWidget {
         BlocProvider<VehicleBloc>(
           // On initialise le bloc et on ajoute un premier véhicule par défaut
           create: (context) => VehicleBloc()..add(AddVehicle()),
+        ),
+        BlocProvider<VehicleBloc>(
+          create: (context) => VehicleBloc()..add(AddVehicle()),
+        ),
+        BlocProvider<HistoryBloc>(
+          // On charge l'historique dès l'ouverture de l'application
+          create: (context) => HistoryBloc()..add(LoadHistory()),
         ),
       ],
       child: MaterialApp(
