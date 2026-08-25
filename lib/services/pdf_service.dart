@@ -10,36 +10,28 @@ class PdfService {
 
     // 1. Pagination : On parcourt la liste avec un pas de 2
     for (var i = 0; i < vehicles.length; i += 2) {
-      // Extraction d'un groupe de 2 véhicules max
       final chunk = vehicles.sublist(
         i,
         i + 2 > vehicles.length ? vehicles.length : i + 2,
       );
 
-      // 2. Création de la page A4 en orientation Portrait
+      // 2. Création de la page A4 en orientation PORTRAIT
       pdf.addPage(
         pw.Page(
-          pageFormat: PdfPageFormat.a4, // Format portrait classique
-          margin: const pw.EdgeInsets.all(20),
+          pageFormat: PdfPageFormat.a4, // Mode portrait
+          // Marges réduites au maximum pour utiliser tout le papier
+          margin: const pw.EdgeInsets.all(10),
           build: (pw.Context context) {
             return pw.Column(
               crossAxisAlignment: pw.CrossAxisAlignment.stretch,
               children: [
-                // Véhicule 1 - Exemplaire 1
+                pw.Expanded(child: _buildLabel(chunk[0].chassisNumber)),
                 pw.Expanded(child: _buildLabel(chunk[0].chassisNumber)),
 
-                // Véhicule 1 - Exemplaire 2
-                pw.Expanded(child: _buildLabel(chunk[0].chassisNumber)),
-
-                // Véhicule 2 (s'il existe dans ce groupe)
                 if (chunk.length > 1) ...[
-                  // Véhicule 2 - Exemplaire 1
                   pw.Expanded(child: _buildLabel(chunk[1].chassisNumber)),
-
-                  // Véhicule 2 - Exemplaire 2
                   pw.Expanded(child: _buildLabel(chunk[1].chassisNumber)),
                 ] else ...[
-                  // Espaces vides pour maintenir les bonnes proportions si 1 seul véhicule est présent
                   pw.Expanded(child: pw.Container()),
                   pw.Expanded(child: pw.Container()),
                 ],
@@ -50,29 +42,28 @@ class PdfService {
       );
     }
 
-    // Retourne le document sous forme de données binaires
     return pdf.save();
   }
 
-  /// Construit une étiquette individuelle occupant toute la largeur
+  /// Construit une étiquette individuelle
   static pw.Widget _buildLabel(String chassisNumber) {
     return pw.Container(
       decoration: pw.BoxDecoration(
-        // Bordure en pointillés gris léger pour guider le coup de ciseau
         border: pw.Border.all(
           color: PdfColors.grey400,
           width: 1,
           style: pw.BorderStyle.dashed,
         ),
       ),
-      padding: const pw.EdgeInsets.all(10), // Légère marge interne
+      // Marge interne très fine pour coller le texte aux bords
+      padding: const pw.EdgeInsets.symmetric(horizontal: 5, vertical: 2),
       child: pw.Center(
-        // Le FittedBox force le texte à s'étirer au maximum de l'espace disponible
+        // BoxFit.fill est la clé : il étire le texte en hauteur ET en largeur !
         child: pw.FittedBox(
-          fit: pw.BoxFit.contain,
+          fit: pw.BoxFit.fill,
           child: pw.Text(
-            'CH * $chassisNumber', // J'ai remplacé le tiret par une étoile comme sur l'image
-            style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+            'CH * $chassisNumber',
+            style: pw.TextStyle(fontSize: 300, fontWeight: pw.FontWeight.bold),
           ),
         ),
       ),
