@@ -25,5 +25,11 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
       await DbHelper.instance.deleteHistory(event.id);
       add(LoadHistory());
     });
+
+    on<ClearAllHistory>((event, emit) async {
+      await DbHelper.instance
+          .clearAllHistory(); // Assure-toi que cette méthode existe dans ton DbHelper
+      add(LoadHistory()); // Recharge la liste (qui sera vide)
+    });
   }
 }

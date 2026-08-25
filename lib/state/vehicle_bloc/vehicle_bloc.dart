@@ -29,5 +29,14 @@ class VehicleBloc extends Bloc<VehicleEvent, VehicleState> {
       }).toList();
       emit(state.copyWith(vehicles: updatedList));
     });
+
+    on<ResetVehicles>((event, emit) {
+      // On crée un nouveau véhicule vide
+      final newVehicle = Vehicle(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+      );
+      // On écrase la liste existante avec uniquement ce nouveau véhicule
+      emit(state.copyWith(vehicles: [newVehicle]));
+    });
   }
 }

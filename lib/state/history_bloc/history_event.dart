@@ -21,3 +21,5 @@ class RemoveFromHistory extends HistoryEvent {
   @override
   List<Object> get props => [id];
 }
+
+class ClearAllHistory extends HistoryEvent {}

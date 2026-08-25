@@ -16,24 +16,33 @@ class PdfService {
         i + 2 > vehicles.length ? vehicles.length : i + 2,
       );
 
-      // 2. Création de la page A4 en orientation Paysage
+      // 2. Création de la page A4 en orientation Portrait
       pdf.addPage(
         pw.Page(
-          pageFormat: PdfPageFormat.a4.landscape,
-          // Marge de 20 points pour s'assurer que les imprimantes ne coupent pas les bords
+          pageFormat: PdfPageFormat.a4, // Format portrait classique
           margin: const pw.EdgeInsets.all(20),
           build: (pw.Context context) {
             return pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.stretch,
               children: [
-                // Ligne 1 : Véhicule 1 (qui crée automatiquement 2 exemplaires)
-                pw.Expanded(child: _buildVehicleRow(chunk[0])),
+                // Véhicule 1 - Exemplaire 1
+                pw.Expanded(child: _buildLabel(chunk[0].chassisNumber)),
 
-                // Ligne 2 : Véhicule 2 (s'il existe dans ce groupe, sinon on laisse un espace vide)
-                pw.Expanded(
-                  child: chunk.length > 1
-                      ? _buildVehicleRow(chunk[1])
-                      : pw.Container(), // Espace vide si nombre de véhicules impair
-                ),
+                // Véhicule 1 - Exemplaire 2
+                pw.Expanded(child: _buildLabel(chunk[0].chassisNumber)),
+
+                // Véhicule 2 (s'il existe dans ce groupe)
+                if (chunk.length > 1) ...[
+                  // Véhicule 2 - Exemplaire 1
+                  pw.Expanded(child: _buildLabel(chunk[1].chassisNumber)),
+
+                  // Véhicule 2 - Exemplaire 2
+                  pw.Expanded(child: _buildLabel(chunk[1].chassisNumber)),
+                ] else ...[
+                  // Espaces vides pour maintenir les bonnes proportions si 1 seul véhicule est présent
+                  pw.Expanded(child: pw.Container()),
+                  pw.Expanded(child: pw.Container()),
+                ],
               ],
             );
           },
@@ -45,20 +54,7 @@ class PdfService {
     return pdf.save();
   }
 
-  /// Construit la ligne contenant les 2 exemplaires (Avant / Arrière) pour un véhicule
-  static pw.Widget _buildVehicleRow(Vehicle vehicle) {
-    return pw.Row(
-      children: [
-        // Exemplaire 1 (Moitié gauche)
-        pw.Expanded(child: _buildLabel(vehicle.chassisNumber)),
-
-        // Exemplaire 2 (Moitié droite)
-        pw.Expanded(child: _buildLabel(vehicle.chassisNumber)),
-      ],
-    );
-  }
-
-  /// Construit une étiquette individuelle avec bordure de découpe
+  /// Construit une étiquette individuelle occupant toute la largeur
   static pw.Widget _buildLabel(String chassisNumber) {
     return pw.Container(
       decoration: pw.BoxDecoration(
@@ -69,12 +65,14 @@ class PdfService {
           style: pw.BorderStyle.dashed,
         ),
       ),
+      padding: const pw.EdgeInsets.all(10), // Légère marge interne
       child: pw.Center(
-        child: pw.Text(
-          'CH - $chassisNumber',
-          style: pw.TextStyle(
-            fontSize: 85, // Texte très grand
-            fontWeight: pw.FontWeight.bold,
+        // Le FittedBox force le texte à s'étirer au maximum de l'espace disponible
+        child: pw.FittedBox(
+          fit: pw.BoxFit.contain,
+          child: pw.Text(
+            'CH * $chassisNumber', // J'ai remplacé le tiret par une étoile comme sur l'image
+            style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
           ),
         ),
       ),

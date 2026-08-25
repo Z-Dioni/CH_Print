@@ -26,3 +26,5 @@ class UpdateChassisNumber extends VehicleEvent {
   @override
   List<Object> get props => [id, chassisNumber];
 }
+
+class ResetVehicles extends VehicleEvent {}

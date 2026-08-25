@@ -52,4 +52,9 @@ class DbHelper {
     final db = await instance.database;
     return await db.delete('print_history');
   }
+
+  Future<void> clearAllHistory() async {
+    final db = await instance.database;
+    await db.delete('print_history');
+  }
 }

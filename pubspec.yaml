@@ -29,6 +29,8 @@ dependencies:
   # Icônes modernes
   cupertino_icons: ^1.0.6
 
+  url_launcher: ^6.3.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
