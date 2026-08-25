@@ -1,68 +1,111 @@
 # CH Print 🖨️ 🚘
 
-CH Print est une application mobile utilitaire développée en **Flutter**. Elle est conçue spécifiquement pour les professionnels du transit automobile (notamment en zones frontalières) afin d'automatiser et d'accélérer la création d'étiquettes de numéros de châssis.
+CH Print est une application mobile développée avec Flutter pour faciliter la création et l'impression d'étiquettes de numéros de châssis dans le secteur du transit automobile.
 
-Le processus manuel de création et d'impression de ces numéros (à coller à l'avant et à l'arrière des véhicules) est chronophage et sujet aux erreurs. CH Print résout ce problème avec une interface minimaliste, rapide et **100 % hors ligne**.
+L'objectif est simple : éliminer le travail manuel, réduire les erreurs et permettre une impression rapide et fiable, directement depuis le terrain, sans dépendre d'un serveur ni d'une connexion Internet.
 
-## ✨ Fonctionnalités principales
+## ✨ Fonctionnalités
 
-- **Saisie dynamique** : Ajout d'un nombre illimité de véhicules avec validation stricte (exactement 4 chiffres par numéro).
-- **Moteur PDF intelligent** : 
-  - Format A4 en orientation paysage.
-  - Règle métier automatisée : 1 véhicule = 1 numéro = 2 exemplaires (avant/arrière).
-  - Pagination automatique : Maximum 2 véhicules (soit 4 étiquettes) par page.
-  - Lignes de découpe intégrées pour faciliter le travail sur le terrain.
-- **Impression & Partage** : Aperçu natif, impression directe (Wi-Fi/Bluetooth) et partage du PDF généré.
-- **Historique local** : Sauvegarde automatique des sessions de génération avec SQLite, consultable à tout moment sans connexion.
-- **Mode sombre/clair** : Interface adaptative et ergonomique.
+- Saisie rapide de plusieurs véhicules
+- Validation stricte des numéros de châssis (4 chiffres par véhicule)
+- Génération automatique de documents PDF au format A4 paysage
+- Règle métier intégrée : 1 véhicule = 1 numéro = 2 impressions (avant/arrière)
+- Pagination automatique des étiquettes
+- Lignes de découpe intégrées pour faciliter la découpe et l'application
+- Aperçu natif avant impression
+- Impression directe via le système d'impression du device
+- Partage du PDF généré
+- Historique local sauvegardé en base SQLite
+- Support du thème clair et sombre
+- 100 % hors ligne
 
-## 🛠️ Technologies et Packages
+## 🛠️ Stack technique
 
-- **Framework** : [Flutter](https://flutter.dev/) (Dart)
-- **Gestion d'état** : `flutter_bloc` & `equatable`
-- **Génération PDF** : `pdf`
-- **Impression et Aperçu** : `printing`
-- **Base de données** : `sqflite` & `path_provider` (Historique local)
-- **Architecture** : Clean Architecture simplifiée (Séparation claire entre UI, State, Services et Data).
+- Flutter
+- Dart
+- flutter_bloc
+- equatable
+- pdf
+- printing
+- sqflite
+- path_provider
+- intl
+- url_launcher
 
-## 🏗️ Architecture du projet
+## 🏗️ Structure du projet
 
 ```text
 lib/
-├── core/       # Thème, constantes et utilitaires (validateurs)
-├── data/       # Modèles de données (Vehicle, PrintHistory) et config SQLite
-├── services/   # Logique métier pure (Génération PDF, appels base de données)
-├── state/      # Blocs (VehicleBloc, HistoryBloc) pour la gestion d'état réactive
-├── screens/    # Écrans de l'application (Accueil, Historique, Aperçu, etc.)
-└── widgets/    # Composants UI réutilisables (ChassisInput, VehicleCard)
+├── core/        # Thème, utilitaires et validations
+├── data/        # Modèles de données et base SQLite
+├── services/    # Logique métier et génération PDF
+├── state/       # Blocs et gestion d'état
+├── screens/     # Écrans de l'application
+├── widgets/     # Composants UI réutilisables
+├── main.dart    # Point d'entrée de l'application
+└── README.md    # Documentation du projet
+```
 
-🚀 Installation et exécution
+## ✅ Prérequis
 
-    Clonez ce dépôt :
-    Bash
+Avant de lancer le projet, assurez-vous d'avoir installé :
 
-    git clone [https://github.com/votre-nom/ch_print.git](https://github.com/votre-nom/ch_print.git)
+- Flutter SDK
+- Android Studio ou VS Code avec les outils Flutter
+- Un émulateur Android ou un appareil physique connecté
 
-    Accédez au dossier du projet :
-    Bash
+Vérifiez la bonne installation avec :
 
-    cd ch_print
+```bash
+flutter --version
+```
 
-    Installez les dépendances :
-    Bash
+## 🚀 Installation
 
-    flutter pub get
+1. Clonez le dépôt :
 
-    Lancez l'application (sur un émulateur ou un appareil physique) :
-    Bash
+```bash
+git clone https://github.com/votre-nom/ch_print.git
+```
 
-    flutter run
+2. Accédez au dossier du projet :
 
-🔒 Confidentialité et Données
+```bash
+cd ch_print
+```
 
-CH Print a été pensée pour la confidentialité et la fiabilité. Aucune donnée ne quitte l'appareil. L'application ne contient aucun backend, aucune API externe, et ne requiert aucune connexion Internet pour fonctionner.
+3. Installez les dépendances :
 
-Développé avec ❤️ pour simplifier le quotidien des professionnels du transit.
+```bash
+flutter pub get
+```
 
+## ▶️ Lancer l'application
 
-<FollowUp label="C'est parfait, je l'ai ajouté. Reprenons à l'étape 5 (Validation des champs) !" query="Le README est sur GitHub ! Reprenons à l'étape 5 : Ajout de la validation métier pour empêcher la génération si un champ est invalide."/>
+```bash
+flutter run
+```
+
+Pour une version spécifique de plateforme :
+
+```bash
+flutter run -d android
+```
+
+## 📄 Utilisation
+
+1. Ajoutez un ou plusieurs véhicules.
+2. Saisissez le numéro de châssis correspondant.
+3. Vérifiez la validation automatique des champs.
+4. Générez le PDF.
+5. Prévisualisez, imprimez ou partagez le document.
+
+## 🔒 Confidentialité et sécurité
+
+CH Print fonctionne entièrement localement. Aucune donnée n'est envoyée vers un backend externe et l'application ne nécessite pas de connexion Internet pour fonctionner.
+
+## 📌 À propos
+
+Ce projet a été conçu pour simplifier le quotidien des professionnels du transit automobile, en réduisant les erreurs humaines et en accélérant les tâches de préparation et d'impression.
+
+Développé avec ❤️ en Flutter.
