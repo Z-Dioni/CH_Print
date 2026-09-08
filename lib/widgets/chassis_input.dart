@@ -4,16 +4,19 @@ import 'package:flutter/services.dart';
 class ChassisInput extends StatelessWidget {
   final String initialValue;
   final Function(String) onChanged;
+  final FocusNode? focusNode;
 
   const ChassisInput({
     super.key,
     required this.initialValue,
     required this.onChanged,
+    this.focusNode,
   });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      focusNode: focusNode,
       initialValue: initialValue,
       keyboardType: TextInputType.number,
       maxLength: 4,

@@ -2,13 +2,20 @@ import 'package:ch_print/state/history_bloc/history_bloc.dart';
 import 'package:ch_print/state/history_bloc/history_event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import 'core/theme/app_theme.dart';
 import 'screens/main_screen.dart';
 import 'state/vehicle_bloc/vehicle_bloc.dart';
 import 'state/vehicle_bloc/vehicle_event.dart';
+import 'state/theme_controller.dart';
 
 void main() {
-  runApp(const CHPrintApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => ThemeController()..load(),
+      child: const CHPrintApp(),
+    ),
+  );
 }
 
 class CHPrintApp extends StatelessWidget {
@@ -19,10 +26,6 @@ class CHPrintApp extends StatelessWidget {
     // MultiBlocProvider nous permettra d'ajouter l'HistoryBloc plus tard
     return MultiBlocProvider(
       providers: [
-        BlocProvider<VehicleBloc>(
-          // On initialise le bloc et on ajoute un premier véhicule par défaut
-          create: (context) => VehicleBloc()..add(AddVehicle()),
-        ),
         BlocProvider<VehicleBloc>(
           create: (context) => VehicleBloc()..add(AddVehicle()),
         ),
@@ -36,7 +39,7 @@ class CHPrintApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
-        themeMode: ThemeMode.system,
+        themeMode: context.watch<ThemeController>().themeMode,
         home: const MainScreen(),
       ),
     );

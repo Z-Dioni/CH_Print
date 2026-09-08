@@ -85,6 +85,48 @@ class HelpScreen extends StatelessWidget {
             'Imprimez ou partagez le PDF.',
             Icons.print_outlined,
           ),
+          const SizedBox(height: 24),
+          Card(
+            elevation: 0,
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Personnaliser les étiquettes',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    'Dans Paramètres > Format des étiquettes, choisissez une police large et grasse, puis sélectionnez un séparateur ou saisissez votre propre caractère. Appuyez sur Sauvegarder pour appliquer les changements au prochain PDF.',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          Card(
+            elevation: 0,
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Modifier le thème',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    'Dans Paramètres > Thème de l’application, choisissez le mode automatique, clair ou sombre. Votre choix est conservé sur l’appareil.',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
